@@ -86,7 +86,7 @@
 //! a different thread.
 
 // Proc-macro2 types in rustdoc of other crates get linked to here.
-#![doc(html_root_url = "https://docs.rs/proc-macro2/1.0.81")]
+#![doc(html_root_url = "https://docs.rs/proc-macro2/1.0.78")]
 #![cfg_attr(any(proc_macro_span, super_unstable), feature(proc_macro_span))]
 #![cfg_attr(super_unstable, feature(proc_macro_def_site))]
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
@@ -96,7 +96,6 @@
     clippy::cast_possible_truncation,
     clippy::checked_conversions,
     clippy::doc_markdown,
-    clippy::incompatible_msrv,
     clippy::items_after_statements,
     clippy::iter_without_into_iter,
     clippy::let_underscore_untyped,
@@ -170,7 +169,6 @@ use core::ops::Range;
 use core::ops::RangeBounds;
 use core::str::FromStr;
 use std::error::Error;
-use std::ffi::CStr;
 #[cfg(procmacro2_semver_exempt)]
 use std::path::PathBuf;
 
@@ -678,12 +676,12 @@ pub enum Delimiter {
     Brace,
     /// `[ ... ]`
     Bracket,
-    /// `∅ ... ∅`
+    /// `Ø ... Ø`
     ///
-    /// An invisible delimiter, that may, for example, appear around tokens
+    /// An implicit delimiter, that may, for example, appear around tokens
     /// coming from a "macro variable" `$var`. It is important to preserve
     /// operator priorities in cases like `$var * 3` where `$var` is `1 + 2`.
-    /// Invisible delimiters may not survive roundtrip of a token stream through
+    /// Implicit delimiters may not survive roundtrip of a token stream through
     /// a string.
     None,
 }
@@ -1235,19 +1233,9 @@ impl Literal {
         Literal::_new(imp::Literal::character(ch))
     }
 
-    /// Byte character literal.
-    pub fn byte_character(byte: u8) -> Literal {
-        Literal::_new(imp::Literal::byte_character(byte))
-    }
-
     /// Byte string literal.
-    pub fn byte_string(bytes: &[u8]) -> Literal {
-        Literal::_new(imp::Literal::byte_string(bytes))
-    }
-
-    /// C string literal.
-    pub fn c_string(string: &CStr) -> Literal {
-        Literal::_new(imp::Literal::c_string(string))
+    pub fn byte_string(s: &[u8]) -> Literal {
+        Literal::_new(imp::Literal::byte_string(s))
     }
 
     /// Returns the span encompassing this literal.
